@@ -1,0 +1,114 @@
+/* style.css */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board {
+  width: 400px;
+  height: 400px;
+}
+
+.dice {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; 
+  background-color: white;
+}
+
+.dice-face {
+  width: 80px;
+  height: 80px;
+  background-color: red; 
+  border-radius: 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transform: rotate(0deg); 
+  animation: dice-spin 1s linear infinite;
+}
+
+.roll-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #eee;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Player Color Styling */
+.player-1 { 
+  color: red;
+}
+
+.player-2 { 
+  color: yellow;
+}
+
+.player-3 { 
+  color: green;
+}
+
+.player-4 { 
+  color: blue;
+}
+
+/* Dice Animation */
+@keyframes dice-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Timer Styling */
+.timer {
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+/* Active Player Styling */
+.player.active .roll-button { 
+  border: 2px solid #007bff; 
+  animation: blink 1s linear infinite;
+}
+
+/* Piece Animation (for smooth movement) */
+.piece {
+  transition: transform 0.5s ease-in-out; 
+}
+
+.piece.moving {
+  /* You'll apply this class to the piece when it's moving */
+  transform: translate(50px, 100px); 
+}
+
+/* Blinking Animation for Active Player */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
