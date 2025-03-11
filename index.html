@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ludo Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <div class="board">
+      <!-- Game board elements -->
+    </div>
+    <div class="dice">
+      <div class="dice-face"></div>
+    </div>
+    <div class="players">
+      <div class="player player-1">
+        <button class="roll-button">Roll for Player 1</button>
+        <div class="timer">10</div>
+        <!-- Player 1 details -->
+      </div>
+      <div class="player player-2">
+        <button class="roll-button">Roll for Player 2</button>
+        <div class="timer">10</div>
+        <!-- Player 2 details -->
+      </div>
+      <div class="player player-3">
+        <button class="roll-button">Roll for Player 3</button>
+        <div class="timer">10</div>
+        <!-- Player 3 details -->
+      </div>
+      <div class="player player-4">
+        <button class="roll-button">Roll for Player 4</button>
+        <div class="timer">10</div>
+        <!-- Player 4 details -->
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+/* style.css */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board {
+  width: 400px;
+  height: 400px;
+}
+
+.dice {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; 
+  background-color: white;
+}
+
+.dice-face {
+  width: 80px;
+  height: 80px;
+  background-color: red; 
+  border-radius: 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transform: rotate(0deg); 
+  animation: dice-spin 1s linear infinite;
+}
+
+.roll-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #eee;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Player Color Styling */
+.player-1 { 
+  color: red;
+}
+
+.player-2 { 
+  color: yellow;
+}
+
+.player-3 { 
+  color: green;
+}
+
+.player-4 { 
+  color: blue;
+}
+
+/* Dice Animation */
+@keyframes dice-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Timer Styling */
+.timer {
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+/* Active Player Styling */
+.player.active .roll-button { 
+  border: 2px solid #007bff; 
+  animation: blink 1s linear infinite;
+}
+
+/* Piece Animation (for smooth movement) */
+.piece {
+  transition: transform 0.5s ease-in-out; 
+}
+
+.piece.moving {
+  /* You'll apply this class to the piece when it's moving */
+  transform: translate(50px, 100px); 
+}
+
+/* Blinking Animation for Active Player */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+// script.js
+const rollButtons = document.querySelectorAll('.roll-button');
+const diceFace = document.querySelector('.dice-face');
+let currentPlayer = 1; 
+let timerInterval; 
+
+function startTimer(playerIndex) {
+  const timerElement = document.querySelector(`.player-${playerIndex} .timer`);
+  let secondsRemaining = 10;
+
+  timerElement.textContent = secondsRemaining;
+
+  timerInterval = setInterval(() => {
+    secondsRemaining--;
+    timerElement.textContent = secondsRemaining;
+
+    if (secondsRemaining === 0) {
+      clearInterval(timerInterval);
+      skipTurn();
+    }
+  }, 1000); 
+}
+
+function skipTurn() {
+  currentPlayer = (currentPlayer % 4) + 1; 
+  updatePlayerTurn();
+}
+
+function updatePlayerTurn() {
+  const previousPlayer = document.querySelector(`.player-${currentPlayer}`);
+  previousPlayer.classList.remove("active");
+
+  const currentPlayerElement = document.querySelector(`.player-${currentPlayer}`);
+  currentPlayerElement.classList.add("active");
+  startTimer(currentPlayer); // Start timer for the new player
+}
+
+function movePiece(pieceElement, newX, newY) {
+  pieceElement.style.transform = `translate(${newX}px, ${newY}px)`; 
+  pieceElement.classList.add("moving");
+
+  setTimeout(() => {
+    pieceElement.classList.remove("moving"); 
+  }, 500); 
+}
+
+rollButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    // Simulate dice roll (generate random number 1-6)
+    const rollResult = Math.floor(Math.random() * 6) + 1;
+
+    // Update the dice face (you can display dots, numbers, or images)
+    diceFace.style.transform = `rotate(${rollResult * 60}deg)`; 
+
+    // Example: Display the roll result on the button
+    button.textContent = `Roll for Player ${button.parentElement.classList[1].replace('player-', '')}: ${rollResult}`;
+
+    // Handle piece movement based on the roll result (example)
+    const pieceToMove = document.querySelector(`.piece-${currentPlayer}`);
+    const newPosition = calculateNewPosition(pieceToMove, rollResult); // Your logic to calculate the new position
+    movePiece(pieceToMove, newPosition.x, newPosition.y);
+
+    // After the roll, switch to the next player
+    skipTurn(); 
+  });
+});
+
+// Start the game
+updatePlayerTurn(); 
